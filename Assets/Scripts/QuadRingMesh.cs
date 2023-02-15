@@ -49,8 +49,11 @@ public class QuadRingMesh : MonoBehaviour
             float angRad = t * 2 * Mathf.PI;
 
             Vector2 directionvector = MathScripts.GetUnitVectorByAngle(angRad);
-            vertices.Add(directionvector * radiusOuter);
-            vertices.Add(directionvector * radiusInner);
+
+            //Vector3 zOffset = Vector3.forward * Mathf.Cos(angRad *4);
+
+            vertices.Add((Vector3)(directionvector * radiusOuter) /*+ zOffset*/);
+            vertices.Add((Vector3)(directionvector * radiusInner) /*+ zOffset*/);
             normals.Add(Vector3.forward);
             normals.Add(Vector3.forward);
 
