@@ -5,6 +5,11 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 public class QuadRingMesh : MonoBehaviour
 {
+    public enum UVProjection {
+        AngularRadial,
+        ProjectZ
+    }
+
     [Range(0.01f, 2)]
     [SerializeField] float radiusInner;
 
@@ -13,6 +18,9 @@ public class QuadRingMesh : MonoBehaviour
 
     [Range(3, 32)]
     [SerializeField] int angularSegments;
+
+    [SerializeField]
+    UVProjection uVProjection = QuadRingMesh.UVProjection.AngularRadial;
 
     Mesh mesh;
 
@@ -42,6 +50,7 @@ public class QuadRingMesh : MonoBehaviour
 
         List<Vector3> vertices = new List<Vector3>();
         List<Vector3> normals = new List<Vector3>();
+        List<Vector2> uvs = new List<Vector2>();
 
         for (int i = 0; i < angularSegments; i++) {
 
@@ -52,10 +61,24 @@ public class QuadRingMesh : MonoBehaviour
 
             //Vector3 zOffset = Vector3.forward * Mathf.Cos(angRad *4);
 
-            vertices.Add((Vector3)(directionvector * radiusOuter) /*+ zOffset*/);
-            vertices.Add((Vector3)(directionvector * radiusInner) /*+ zOffset*/);
+            vertices.Add((Vector3)(directionvector * radiusOuter) );
+            vertices.Add((Vector3)(directionvector * radiusInner) );
             normals.Add(Vector3.forward);
             normals.Add(Vector3.forward);
+
+            switch (uVProjection) {
+                case UVProjection.AngularRadial:
+                    uvs.Add(new Vector2(t, 1));
+                    uvs.Add(new Vector2(t, 0));
+                    break;
+                case UVProjection.ProjectZ:
+                    uvs.Add(directionvector * 0.5f + Vector2.one * 0.5f);
+                    uvs.Add(directionvector * (radiusInner / radiusOuter) * 0.5f + Vector2.one * 0.5f);
+                    break;
+            }
+
+            uvs.Add(new Vector2(t, 1));
+            uvs.Add(new Vector2(t, 0));
 
         }
 
@@ -83,6 +106,7 @@ public class QuadRingMesh : MonoBehaviour
         mesh.SetVertices (vertices);
         mesh.SetTriangles (triangleindices, 0);
         mesh.SetNormals(normals);
+        mesh.SetUVs(0, uvs);
 
     }
 }
