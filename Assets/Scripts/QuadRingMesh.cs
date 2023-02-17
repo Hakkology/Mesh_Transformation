@@ -16,7 +16,7 @@ public class QuadRingMesh : MonoBehaviour
     [Range(0.01f, 2)]
     [SerializeField] float thickness;
 
-    [Range(3, 32)]
+    [Range(3, 128)]
     [SerializeField] int angularSegments;
 
     [SerializeField]
@@ -52,7 +52,7 @@ public class QuadRingMesh : MonoBehaviour
         List<Vector3> normals = new List<Vector3>();
         List<Vector2> uvs = new List<Vector2>();
 
-        for (int i = 0; i < angularSegments; i++) {
+        for (int i = 0; i < angularSegments+1; i++) {
 
             float t = i / (float)angularSegments;
             float angRad = t * 2 * Mathf.PI;
@@ -77,8 +77,8 @@ public class QuadRingMesh : MonoBehaviour
                     break;
             }
 
-            uvs.Add(new Vector2(t, 1));
-            uvs.Add(new Vector2(t, 0));
+            //uvs.Add(new Vector2(t, 1));
+            //uvs.Add(new Vector2(t, 0));
 
         }
 
@@ -88,8 +88,8 @@ public class QuadRingMesh : MonoBehaviour
             int rootindex = i * 2;
 
             int rootIndexInner = rootindex + 1;
-            int rootIndexOuterNext = (rootindex + 2) % vCount;
-            int rootIndexInnerNext = (rootindex + 3) % vCount;
+            int rootIndexOuterNext = rootindex + 2;
+            int rootIndexInnerNext = rootindex + 3;
 
             //triangle indices, count and turn is important.
 
