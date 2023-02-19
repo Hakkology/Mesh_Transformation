@@ -15,50 +15,50 @@ MonoBehaviour:
   vertices:
   - points: {x: 3, y: 0}
     normals: {x: 0, y: 1}
-    uvs: 0
+    uvs: 0.171
   - points: {x: 3, y: 0}
     normals: {x: -0.7071068, y: 0.7071068}
-    uvs: 0
+    uvs: 0.171
   - points: {x: 4, y: 1}
     normals: {x: -0.7071068, y: 0.7071068}
-    uvs: 0
+    uvs: 0.116
   - points: {x: 4, y: 1}
     normals: {x: 0, y: 1}
-    uvs: 0
+    uvs: 0.116
   - points: {x: 5, y: 1}
     normals: {x: 0, y: 1}
-    uvs: 0
+    uvs: 0.077
   - points: {x: 5, y: 1}
     normals: {x: 1, y: 0}
-    uvs: 0
+    uvs: 0.077
   - points: {x: 5, y: -1}
     normals: {x: 1, y: 0}
     uvs: 0
   - points: {x: 5, y: -1}
     normals: {x: 0, y: -1}
-    uvs: 0
+    uvs: 1
   - points: {x: -5, y: -1}
     normals: {x: 0, y: -1}
-    uvs: 0
+    uvs: 0.613
   - points: {x: -5, y: -1}
     normals: {x: -1, y: 0}
-    uvs: 0
+    uvs: 0.574
   - points: {x: -5, y: 1}
     normals: {x: -1, y: 0}
-    uvs: 0
+    uvs: 0.497
   - points: {x: -5, y: 1}
     normals: {x: 0, y: 1}
-    uvs: 0
+    uvs: 0.497
   - points: {x: -4, y: 1}
     normals: {x: 0, y: 1}
-    uvs: 0
+    uvs: 0.458
   - points: {x: -4, y: 1}
     normals: {x: 0.7071068, y: 0.7071068}
-    uvs: 0
+    uvs: 0.458
   - points: {x: -3, y: 0}
     normals: {x: 0.7071068, y: 0.7071068}
-    uvs: 0
+    uvs: 0.403
   - points: {x: -3, y: 0}
     normals: {x: 0, y: 1}
-    uvs: 0
-  lineindices: 
+    uvs: 0.403
+  lineindices: 0f000000000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e000000
