@@ -4,7 +4,10 @@ Shader "Unlit/DefaultUnlitShader"
     {
         // _MainTex ("Texture", 2D) = "white" {}
         // Default texture data deleted
-        _Color("Color", Color) = (1,1,1,1)
+        _ColorA("Color A", Color) = (1,1,1,1)
+        _ColorB("Color B", Color) = (1,1,1,1)
+        _ColorStart ("Color Start", Range(0,1)) = 0
+        _ColorEnd ("Color End", Range(0,1)) = 1
     }
         SubShader // SubShaders contains the passes
     {
@@ -24,7 +27,10 @@ Shader "Unlit/DefaultUnlitShader"
             // sampler2D _MainTex;
             // float4 _MainTex_ST;
             // default texture data deleted
-            float4 _Color;
+            float4 _ColorA;
+            float4 _ColorB;
+            float _ColorStart;
+            float _ColorEnd;
             
             // automatically filled by Unity
             struct MeshData // mesh data per vertex
@@ -33,7 +39,7 @@ Shader "Unlit/DefaultUnlitShader"
                 float3 normals : NORMAL;  // normals of objects
                 // float4 tangent : TANGENT;  tangent information
                 // float4 color : COLOR;  colour information, always float4
-                float2 uv : TEXCOORD0; // uv0 coordinates (sample: diffuse/normal map textures)
+                float2 uv0 : TEXCOORD0; // uv0 coordinates (sample: diffuse/normal map textures)
                 // float2 uv1 : TEXCOORD1; // uv1 coordinates (sample: lightmap coordinates)
                 //semantics for uv refers to uv channels
             };
@@ -42,9 +48,9 @@ Shader "Unlit/DefaultUnlitShader"
             struct Interpolators // data that gets passed from vertex shader to fragment shader - aka interpolators
                 
             {
-                // float2 uv : TEXCOORD0; // different than uv channel above
+                float2 uv : TEXCOORD0; // different than uv channel above
                 // UNITY_FOG_COORDS(1) // fog added as default, cancelled.
-                float3 normal : TEXCOORD0; // normals
+                float3 normal : TEXCOORD1; // normals
                 float4 vertex : SV_POSITION; // clip space position of this vertex
             };
 
@@ -53,6 +59,7 @@ Shader "Unlit/DefaultUnlitShader"
                 Interpolators o;
                 o.vertex = UnityObjectToClipPos(v.vertex); // converts local space to clip space, reason shader follows the object
                 o.normal = UnityObjectToWorldNormal(v.normals); //just pass through
+                o.uv = v.uv0;
                 return o;
 
                 // o.uv = TRANSFORM_TEX(v.uv, _MainTex);
@@ -70,6 +77,10 @@ Shader "Unlit/DefaultUnlitShader"
             // float4 -> half4 -> fixed4
             // float4x4 -> half4x4 (c#: Matrix 4x4)
 
+            float InverseLerp(float a, float b, float v) {
+                return (v - a) / (b - a);
+            }
+
             float4 frag(Interpolators i) : SV_Target
             {
                 // float4 myvalue;
@@ -81,7 +92,14 @@ Shader "Unlit/DefaultUnlitShader"
                 // UNITY_APPLY_FOG(i.fogCoord, col);
 
                 // return _Color; // 4th is alpha channel, usually used in transparancy or to pass seperate data
-                return float4 (i.normal, 1);
+                // lerp
+
+
+
+                float t = InverseLerp(_ColorStart, _ColorEnd, i.uv.x);
+                float4 outColor = lerp(_ColorA, _ColorB, t);
+                return outColor;
+                //uv.xxx represents a gradient on x coords, uv.yyy represents a gradient on y coords.
             }
             ENDCG
 
