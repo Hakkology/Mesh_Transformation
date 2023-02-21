@@ -1,6 +1,7 @@
 Shader "Unlit/DefaultUnlitShader"
 {
     Properties // Input Data (excluding stuff supplied automatically by Unity like Meshes
+    // https://developer.download.nvidia.com/cg/index_stdlib.html
     {
         // _MainTex ("Texture", 2D) = "white" {}
         // Default texture data deleted
@@ -23,6 +24,8 @@ Shader "Unlit/DefaultUnlitShader"
             // #pragma multi_compile_fog // fog added as default, cancelled for this example
 
             #include "UnityCG.cginc" // file containing Unity specific things - check later
+
+            #define TAU 6.28318530718 //pre-processor definition
 
             // sampler2D _MainTex;
             // float4 _MainTex_ST;
@@ -94,9 +97,16 @@ Shader "Unlit/DefaultUnlitShader"
                 // return _Color; // 4th is alpha channel, usually used in transparancy or to pass seperate data
                 // lerp
 
+                //for triangle waves:
+                // float t = abs(frac(i.uv.x *5) *2 -1);
+                // return t;
 
-
-                float t = InverseLerp(_ColorStart, _ColorEnd, i.uv.x);
+                float t = saturate(InverseLerp(_ColorStart, _ColorEnd, i.uv.x));
+                //t= frac(t); // repeating values
+                //InverseLerp gives values below 0 or above 1. This needs to be trimmed.
+                //So different colours emerge from those that we chose.
+                //Smoothstep is a combination of all three of these.
+                //saturate (clamp) implies that the value is 0 if less than 0, 1 if more than 1.
                 float4 outColor = lerp(_ColorA, _ColorB, t);
                 return outColor;
                 //uv.xxx represents a gradient on x coords, uv.yyy represents a gradient on y coords.
