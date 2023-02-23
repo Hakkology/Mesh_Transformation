@@ -39,17 +39,16 @@ Shader "Unlit/DefaultUnlitShader"
             struct MeshData // mesh data per vertex
             {
                 float4 vertex : POSITION; // vertex position, usually float4 in mesh data
-                float3 normals : NORMAL;  // normals of objects
-                // float4 tangent : TANGENT;  tangent information
-                // float4 color : COLOR;  colour information, always float4
+                float3 normals : NORMAL;  // local space normals direction
+                // float4 tangent : TANGENT;  tangent direction (xyz) tangent sign (w)
+                // float4 color : COLOR;  // vertex colour information, always float4
                 float2 uv0 : TEXCOORD0; // uv0 coordinates (sample: diffuse/normal map textures)
                 // float2 uv1 : TEXCOORD1; // uv1 coordinates (sample: lightmap coordinates)
-                //semantics for uv refers to uv channels
+                // semantics for uv refers to uv channels for MeshData but they are merely text definers and can be whatever we wish them to be in Interpolators (v => f layer)
             };
 
             // normals smoothly blend between vertices
-            struct Interpolators // data that gets passed from vertex shader to fragment shader - aka interpolators
-                
+            struct Interpolators // data that gets passed from vertex shader to fragment shader - aka interpolators 
             {
                 float2 uv : TEXCOORD0; // different than uv channel above
                 // UNITY_FOG_COORDS(1) // fog added as default, cancelled.
@@ -57,7 +56,7 @@ Shader "Unlit/DefaultUnlitShader"
                 float4 vertex : SV_POSITION; // clip space position of this vertex
             };
 
-            Interpolators vert (MeshData v)
+            Interpolators vert (MeshData v) // triangles
             {
                 Interpolators o;
                 o.vertex = UnityObjectToClipPos(v.vertex); // converts local space to clip space, reason shader follows the object
@@ -98,8 +97,46 @@ Shader "Unlit/DefaultUnlitShader"
                 // lerp
 
                 //for triangle waves:
-                // float t = abs(frac(i.uv.x *5) *2 -1);
-                // return t;
+                //float t = abs(frac(i.uv.x *5) *2 -1);
+                //return t;
+
+                //for triangle waves with distortion effect:
+                //float xOffset = i.uv.y;
+                //float t = cos ((i.uv.x + xOffset) * TAU * 5) * 0.5 + 0.5;
+                //return t;
+
+                //for the zigzag pattern:
+                //float xOffset = cos (i.uv.y * TAU * 8) * 0.1;
+                //float t = cos ((i.uv.x + xOffset) * TAU * 5) * 0.5 + 0.5;
+                //return t;
+
+                //Time Variable
+                //_Time.xyzw
+                //y component is seconds
+                //w component is smaller
+                //float xOffset = cos (i.uv.y * TAU * 8) * 0.1;
+                //float t = cos ((i.uv.x + xOffset + _Time.y * 0.1) * TAU * 5) * 0.5 + 0.5;
+                //return t;
+
+                //ring around the character
+                //float xOffset = cos (i.uv.y * TAU * 8) * 0.1;
+                //float t = cos ((i.uv.x + xOffset + _Time.y * 0.1) * TAU * 5) * 0.5 + 0.5;
+                //t *= 1 - i.uv.y; // fade out the ring around the cylinder
+                //return t;
+
+                //blending
+                //src = source colour
+                //dst = destination => behind the character
+                //src.A + dst.B; (how to blend with background)
+                //A, plus sign and B defines the blending
+
+                //additive blending
+                //A = 1; +; B = 1;
+                //multiplicative blending
+                //A = dst; +; B = 0;
+
+                //distortion effect
+
 
                 float t = saturate(InverseLerp(_ColorStart, _ColorEnd, i.uv.x));
                 //t= frac(t); // repeating values
